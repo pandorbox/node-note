@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS usergz;
 CREATE TABLE usergz (
 id INT(10) PRIMARY KEY AUTO_INCREMENT,
 username VARCHAR(10),
-kcid INT(3)
+ noteid INT(3)
 );
 
 #创建数据表userdy
@@ -61,34 +61,32 @@ DROP TABLE IF EXISTS userdy;
 CREATE TABLE userdy (
 id INT(10) PRIMARY KEY AUTO_INCREMENT,
 username VARCHAR(10),
-kcid INT(3)
+ noteid INT(3)
 );
 
-#创建数据表kcpj
-DROP TABLE IF EXISTS kcpj;
-CREATE TABLE kcpj (
+#创建数据表 notepj
+DROP TABLE IF EXISTS  notepj;
+CREATE TABLE  notepj (
 id INT(10) PRIMARY KEY AUTO_INCREMENT,
-kcid INT(3),
+ noteid INT(3),
 pjtime VARCHAR(20),
-kcpjmsg VARCHAR(100),
+ notepjmsg VARCHAR(100),
 userimg VARCHAR(50),
 username VARCHAR(10)
 );
 
-#创建数据表kclist
-DROP TABLE IF EXISTS kclist;
-CREATE TABLE kclist (
+#创建数据表 notelist
+DROP TABLE IF EXISTS  notelist;
+CREATE TABLE  notelist (
 id INT(10) PRIMARY KEY AUTO_INCREMENT,
-kcimg VARCHAR(50),
-kcname VARCHAR(10),
-kcclass VARCHAR(20),
-kcaudio VARCHAR(50),
-kcauthor VARCHAR(10),
-kcjj VARCHAR(200),
-kcjf INT(3),
-kcmb VARCHAR(200),
-isshow VARCHAR(10),
-other VARCHAR(20)
+ noteimg VARCHAR(50),
+ notename VARCHAR(10),
+ noteclass VARCHAR(20),
+ noteauthor VARCHAR(10),
+ notejj VARCHAR(200),
+ notejf INT(3),
+pass VARCHAR(10),
+remarks VARCHAR(20)
 );
 
 #创建数据表notic
