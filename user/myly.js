@@ -9,108 +9,74 @@ const multer = require("multer");
 //创建multer对象指定上传文件目录
 //指定上传文件目录
 var upload = multer({ dest: "public/img/" });
-
-//admin登录
-router.post("/adminlogin", (req, res) => {
-  //获取用户名称
-  var $adminname = req.body.adminname;
-  var $adminpwd = req.body.adminpwd;
-  if (!$adminname) {
-    res.send({ code: 401, msg: "用户名不能为空" });
-    return;
-  }
-  if (!$adminpwd) {
-    res.send({ code: 402, msg: "密码错误" });
-    return;
-  }
-  var sql = "select * from admins where " + "adminname=? and adminpwd=?";
-  pool.query(sql, [$adminname, $adminpwd], (err, result) => {
-    if (err) throw err;
-    if (result.length > 0) {
-      res.send("1");
-    } else {
-      res.send("0");
-    }
-  });
-});
-
+//user
 //注册
 router.post("/registe", (req, res) => {
   //获取用户名称
   var $uname = req.body.username;
   var $upwd = req.body.userpwd;
   if (!$uname) {
-    res.send({ code: 401, msg: "用户名不能为空" });
+    res.send({ code: 400, msg: "用户名不能为空" });
     return;
   }
   if (!$upwd) {
-    res.send({ code: 402, msg: "密码不能为空" });
+    res.send({ code: 400, msg: "密码不能为空" });
     return;
   }
-  var sql = "select * from user where " + "username=?";
+  var sql = "select * from user where " + "userName=?";
   pool.query(sql, [$uname], (err, result) => {
     if (err) throw err;
     if (result.length < 1) {
-      var sql = "INSERT INTO user(username,userpwd) VALUES (?,?) ";
-      pool.query(sql, [$uname, $upwd], (err, result) => {
+      var sql =
+        "INSERT INTO user(userName,userPwd ,userPhoto ,userNickName,userDescribe ,userIntegral,userFans) VALUES (?,?,'http://127.0.0.1:3000/img/userimg/def.png',?,'去添加个人简介','10','0') ";
+      pool.query(sql, [$uname, $upwd, $uname], (err, result) => {
         if (err) throw err;
         if (result.affectedRows > 0) {
-          var sql =
-            "INSERT INTO usermsg(username,usernc,userjj,userimg,userjf) VALUES (?,'还未设置昵称','去添加个人简介','http://127.0.0.1:3000/img/userimg/def.png',10) ";
-          pool.query(sql, [$uname], (err, result) => {
-            if (err) throw err;
-            if (result.affectedRows > 0) {
-              res.send("1");
-            } else {
-              res.send({ code: 401, msg: "注册失败！" });
-            }
-          });
+          res.send("1");
         } else {
-          res.send({ code: 401, msg: "注册失败！" });
+          res.send({ code: 400, msg: "注册失败！" });
         }
       });
     } else {
-      res.send({ code: 401, msg: "用户名已存在！" });
+      res.send({ code: 400, msg: "用户名已存在！" });
     }
   });
 });
+
 //用户登录
 router.post("/login", (req, res) => {
-  //获取用户名称
   var $uname = req.body.username;
   var $upwd = req.body.userpwd;
   if (!$uname) {
-    res.send({ code: 401, msg: "用户名不能为空" });
+    res.send({ code: 400, msg: "用户名不能为空" });
     return;
   }
   if (!$upwd) {
-    res.send({ code: 402, msg: "请输入密码" });
+    res.send({ code: 400, msg: "请输入密码" });
     return;
   }
-  var sql = "select * from user where " + "username=? and userpwd=?";
+  var sql = "select * from user where " + "userName=? and userPwd=?";
   pool.query(sql, [$uname, $upwd], (err, result) => {
     if (err) throw err;
-
     if (result.length > 0) {
-      res.send("1");
+      res.send({ code: 200, data: result[0] });
     } else {
-      res.send({ code: 401, msg: "用户名或密码错误" });
+      res.send({ code: 400, msg: "用户名或密码错误" });
     }
   });
 });
 
 //获取个人信息
-router.post("/mymsg", (req, res) => {
+router.post("/getUserInfo", (req, res) => {
   //获取用户名称
   var $username = req.body.username;
-  var sql = "select * from usermsg where " + "username=?";
+  var sql = "select * from user where " + "userId=?";
   pool.query(sql, [$username], (err, result) => {
     if (err) throw err;
-
     if (result.length > 0) {
-      res.send(result);
+      res.send({ code: 200, data: result[0] });
     } else {
-      res.send({ code: 401, msg: "获取资料失败" });
+      res.send({ code: 400, msg: "获取资料失败" });
     }
   });
 });
@@ -129,13 +95,13 @@ router.post("/addmymsg", (req, res) => {
       pool.query(sql, [$username], (err, result) => {
         if (err) throw err;
         if (result.length > 0) {
-          res.send(result);
+          res.send({ code: 200, data: result[0] });
         } else {
-          res.send({ code: 401, msg: "修改失败！" });
+          res.send({ code: 400, msg: "修改失败！" });
         }
       });
     } else {
-      res.send({ code: 401, msg: "修改失败！" });
+      res.send({ code: 400, msg: "修改失败！" });
     }
   });
 });
@@ -147,9 +113,9 @@ router.post("/mykc", (req, res) => {
   pool.query(sql, [$username], (err, result) => {
     if (err) throw err;
     if (result.length > 0) {
-      res.send(result);
+      res.send({ code: 200, data: result[0] });
     } else {
-      res.send({ code: 401, msg: "获取失败！" });
+      res.send({ code: 400, msg: "获取失败！" });
     }
   });
 });
@@ -163,9 +129,9 @@ router.post("/mybj", (req, res) => {
     if (err) throw err;
     console.log(req.body);
     if (result.length > 0) {
-      res.send(result);
+      res.send({ code: 200, data: result[0] });
     } else {
-      res.send({ code: 401, msg: "获取失败！" });
+      res.send({ code: 400, msg: "获取失败！" });
     }
   });
 });
@@ -184,7 +150,7 @@ router.post("/addmybj", (req, res) => {
       var sql = "select * from userbj where username=?";
       pool.query(sql, [$username], (err, result) => {
         if (err) throw err;
-        res.send(result);
+        res.send({ code: 200, data: result[0] });
       });
     }
   });
@@ -197,9 +163,9 @@ router.post("/myguanzhu", (req, res) => {
   pool.query(sql, [$username], (err, result) => {
     if (err) throw err;
     if (result.length > 0) {
-      res.send(result);
+      res.send({ code: 200, data: result[0] });
     } else {
-      res.send({ code: 401, msg: "获取关注列表失败！" });
+      res.send({ code: 400, msg: "获取关注列表失败！" });
     }
   });
 });
@@ -214,7 +180,7 @@ router.post("/addmyguanzhu", (req, res) => {
     if (result.affectedRows > 0) {
       res.send({ code: 200, msg: "关注成功！" });
     } else {
-      res.send({ code: 401, msg: "关注失败！" });
+      res.send({ code: 400, msg: "关注失败！" });
     }
   });
 });
@@ -226,9 +192,9 @@ router.post("/mydinyue", (req, res) => {
   pool.query(sql, [$username], (err, result) => {
     if (err) throw err;
     if (result.length > 0) {
-      res.send(result);
+      res.send({ code: 200, data: result[0] });
     } else {
-      res.send({ code: 401, msg: "获取订阅列表失败！" });
+      res.send({ code: 400, msg: "获取订阅列表失败！" });
     }
   });
 });
@@ -263,11 +229,11 @@ router.post("/addmydinyue", (req, res) => {
         if (result.affectedRows > 0) {
           res.send({ code: 200, msg: "订阅成功！" });
         } else {
-          res.send({ code: 401, msg: "订阅失败！" });
+          res.send({ code: 400, msg: "订阅失败！" });
         }
       });
     } else {
-      res.send({ code: 401, msg: "订阅失败！" });
+      res.send({ code: 400, msg: "订阅失败！" });
     }
   });
 });
@@ -283,19 +249,19 @@ router.post("/addkclistone", upload.array("kcaudio", 1), (req, res) => {
   var $kcaudio = "";
   console.log($kcjf);
   if (!$kcauthor) {
-    res.send({ code: 401, msg: "作者名不能为空" });
+    res.send({ code: 400, msg: "作者名不能为空" });
     return;
   }
   if (!$kcclass) {
-    res.send({ code: 401, msg: "请选择课程类型" });
+    res.send({ code: 400, msg: "请选择课程类型" });
     return;
   }
   if (!$kcname) {
-    res.send({ code: 401, msg: "课程名不能为空" });
+    res.send({ code: 400, msg: "课程名不能为空" });
     return;
   }
   if (!$kcjf) {
-    res.send({ code: 401, msg: "课程积分不能为空" });
+    res.send({ code: 400, msg: "课程积分不能为空" });
     return;
   }
   for (var i = 0; i < 1; i++) {
@@ -337,27 +303,27 @@ router.post("/addkclist", upload.array("kcimg", 1), (req, res) => {
   var $kcgs = req.body.kcgs;
   var $kcimg = "";
   if (!$kcauthor) {
-    res.send({ code: 401, msg: "作者名不能为空" });
+    res.send({ code: 400, msg: "作者名不能为空" });
     return;
   }
   if (!$kcclass) {
-    res.send({ code: 401, msg: "请选择课程类型" });
+    res.send({ code: 400, msg: "请选择课程类型" });
     return;
   }
   if (!$kcname) {
-    res.send({ code: 401, msg: "课程名不能为空" });
+    res.send({ code: 400, msg: "课程名不能为空" });
     return;
   }
   if (!$kcjj) {
-    res.send({ code: 401, msg: "课程简介不能为空" });
+    res.send({ code: 400, msg: "课程简介不能为空" });
     return;
   }
   if (!$kcjf) {
-    res.send({ code: 401, msg: "积分不能为空" });
+    res.send({ code: 400, msg: "积分不能为空" });
     return;
   }
   if (!$kcgs) {
-    res.send({ code: 402, msg: "课程概述不能为空" });
+    res.send({ code: 400, msg: "课程概述不能为空" });
     return;
   }
   for (var i = 0; i < 1; i++) {
@@ -393,7 +359,7 @@ router.post("/addkclist", upload.array("kcimg", 1), (req, res) => {
     if (result.affectedRows > 0) {
       res.send("上传成功,待审核");
     } else {
-      res.send({ code: 401, msg: "上传失败！" });
+      res.send({ code: 400, msg: "上传失败！" });
     }
   });
 });
@@ -436,13 +402,13 @@ router.post("/adduserimg", upload.array("userimg", 1), (req, res) => {
       pool.query(sql, [$username], (err, result) => {
         if (err) throw err;
         if (result.length > 0) {
-          res.send(result);
+          res.send({ code: 200, data: result[0] });
         } else {
-          res.send({ code: 401, msg: "修改失败！" });
+          res.send({ code: 400, msg: "修改失败！" });
         }
       });
     } else {
-      res.send({ code: 401, msg: "修改失败！" });
+      res.send({ code: 400, msg: "修改失败！" });
     }
   });
 });
@@ -464,13 +430,13 @@ router.post("/addkcpj", (req, res) => {
       pool.query(sql, [$kcid], (err, result) => {
         if (err) throw err;
         if (result.length > 0) {
-          res.send(result);
+          res.send({ code: 200, data: result[0] });
         } else {
-          res.send({ code: 401, msg: "添加评论列表失败！" });
+          res.send({ code: 400, msg: "添加评论列表失败！" });
         }
       });
     } else {
-      res.send({ code: 401, msg: "添加评论列表失败！" });
+      res.send({ code: 400, msg: "添加评论列表失败！" });
     }
   });
 });
@@ -483,9 +449,9 @@ router.post("/kcpj", (req, res) => {
   pool.query(sql, [$kcid], (err, result) => {
     if (err) throw err;
     if (result.length > 0) {
-      res.send(result);
+      res.send({ code: 200, data: result[0] });
     } else {
-      res.send({ code: 401, msg: "获取评论列表失败！" });
+      res.send({ code: 400, msg: "获取评论列表失败！" });
     }
   });
 });
@@ -498,9 +464,9 @@ router.post("/getusermsg", (req, res) => {
   pool.query(sql, [$username], (err, result) => {
     if (err) throw err;
     if (result.length > 0) {
-      res.send(result);
+      res.send({ code: 200, data: result[0] });
     } else {
-      res.send({ code: 401, msg: "获取资料失败！" });
+      res.send({ code: 400, msg: "获取资料失败！" });
     }
   });
 });

@@ -19,10 +19,34 @@ app.use(
 );
 app.use(express.static(__dirname + "/public"));
 
-const demo = require("./user/myly.js");
-app.use("/demo", demo);
+const user = require("./user/myly.js");
+app.use("/user", user);
 
 // 后台管理系统
+
+//admin登录
+app.post("/adminlogin", (req, res) => {
+  //获取用户名称
+  var $adminname = req.body.adminname;
+  var $adminpwd = req.body.adminpwd;
+  if (!$adminname) {
+    res.send({ code: 401, msg: "用户名不能为空" });
+    return;
+  }
+  if (!$adminpwd) {
+    res.send({ code: 402, msg: "密码错误" });
+    return;
+  }
+  var sql = "select * from admins where " + "adminname=? and adminpwd=?";
+  pool.query(sql, [$adminname, $adminpwd], (err, result) => {
+    if (err) throw err;
+    if (result.length > 0) {
+      res.send("1");
+    } else {
+      res.send("0");
+    }
+  });
+});
 // 获取用户
 app.get("/getuser", (req, res) => {
   var sql = "select * from user ";

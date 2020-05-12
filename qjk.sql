@@ -15,84 +15,48 @@ id INT(10) PRIMARY KEY AUTO_INCREMENT,
 adminname VARCHAR(10),
 adminpwd VARCHAR(20)
 );
-
 INSERT INTO admins(adminname,adminpwd) VALUES('admin','123');
-
 
 #创建数据表user
 DROP TABLE IF EXISTS user;
 CREATE TABLE user (
-id INT(10) PRIMARY KEY AUTO_INCREMENT,
-username VARCHAR(10),
-userpwd VARCHAR(20)
+userId INT(10) PRIMARY KEY AUTO_INCREMENT,
+userName VARCHAR(10),
+userPwd VARCHAR(20),
+userPhoto VARCHAR(50),
+userNickName VARCHAR(10),
+userDescribe VARCHAR(50),
+userIntegral VARCHAR(10),
+userFans VARCHAR(10)
 );
 
-#创建数据表usermsg
-DROP TABLE IF EXISTS usermsg;
-CREATE TABLE usermsg (
-id INT(10) PRIMARY KEY AUTO_INCREMENT,
-userimg VARCHAR(50),
-username VARCHAR(10),
-usernc VARCHAR(20),
-userjj VARCHAR(30),
-userjf VARCHAR(30)
-);
-
-#创建数据表userbj
-DROP TABLE IF EXISTS userbj;
-CREATE TABLE userbj (
-id INT(10) PRIMARY KEY AUTO_INCREMENT,
-username VARCHAR(10),
-bjtit VARCHAR(20),
-bjmsg VARCHAR(100),
-bjtime VARCHAR(20)
-);
-
-#创建数据表usergz
-DROP TABLE IF EXISTS usergz;
-CREATE TABLE usergz (
-id INT(10) PRIMARY KEY AUTO_INCREMENT,
-username VARCHAR(10),
- noteid INT(3)
-);
-
-#创建数据表userdy
-DROP TABLE IF EXISTS userdy;
-CREATE TABLE userdy (
-id INT(10) PRIMARY KEY AUTO_INCREMENT,
-username VARCHAR(10),
- noteid INT(3)
-);
-
-#创建数据表 notepj
-DROP TABLE IF EXISTS  notepj;
-CREATE TABLE  notepj (
-id INT(10) PRIMARY KEY AUTO_INCREMENT,
- noteid INT(3),
-pjtime VARCHAR(20),
- notepjmsg VARCHAR(100),
-userimg VARCHAR(50),
-username VARCHAR(10)
-);
-
-#创建数据表 notelist
-DROP TABLE IF EXISTS  notelist;
-CREATE TABLE  notelist (
-id INT(10) PRIMARY KEY AUTO_INCREMENT,
- noteimg VARCHAR(50),
- notename VARCHAR(10),
- noteclass VARCHAR(20),
- noteauthor VARCHAR(10),
- notejj VARCHAR(200),
- notejf INT(3),
-pass VARCHAR(10),
-remarks VARCHAR(20)
+#创建数据表banner
+DROP TABLE IF EXISTS banner;
+CREATE TABLE banner (
+bannerId INT(10) PRIMARY KEY AUTO_INCREMENT,
+bannerSrc VARCHAR(50)
 );
 
 #创建数据表notic
 DROP TABLE IF EXISTS notic;
 CREATE TABLE notic (
-id INT(10) PRIMARY KEY AUTO_INCREMENT,
-notictit VARCHAR(20),
-noticmsg VARCHAR(200)
+noticId INT(10) PRIMARY KEY AUTO_INCREMENT,
+content VARCHAR(50)
+);
+
+#创建数据表noteList
+DROP TABLE IF EXISTS noteList;
+CREATE TABLE noteList (
+noteId INT(10) PRIMARY KEY AUTO_INCREMENT,
+userId VARCHAR(10),
+userPhoto VARCHAR(50),
+userNickName VARCHAR(10),
+noteType VARCHAR(20),
+title VARCHAR(20),
+creatTime VARCHAR(20), 
+describes VARCHAR(20),
+content VARCHAR(50),
+readNum VARCHAR(10),
+noteState INT(5),
+noteRemarks VARCHAR(10)
 );
