@@ -44,6 +44,21 @@ noticId INT(10) PRIMARY KEY AUTO_INCREMENT,
 content VARCHAR(50)
 );
 
+#创建数据表noteType
+DROP TABLE IF EXISTS noteType;
+CREATE TABLE noteType (
+typeId INT(10) PRIMARY KEY AUTO_INCREMENT,
+typeName VARCHAR(50)
+);
+INSERT INTO noteType(typeName) VALUES("Vue");
+INSERT INTO noteType(typeName) VALUES("CSS");
+INSERT INTO noteType(typeName) VALUES("Html");
+INSERT INTO noteType(typeName) VALUES("Javascript");
+INSERT INTO noteType(typeName) VALUES("Java");
+INSERT INTO noteType(typeName) VALUES("PHP");
+
+
+
 #创建数据表noteList
 DROP TABLE IF EXISTS noteList;
 CREATE TABLE noteList (

@@ -9,7 +9,11 @@ const multer = require("multer");
 //创建multer对象指定上传文件目录
 //指定上传文件目录
 var upload = multer({ dest: "public/img/" });
-//user
+/** ---------------------
+ *
+ * user_account
+ *
+ * ----------------------*/
 //注册
 router.post("/registe", (req, res) => {
   //获取用户名称
@@ -105,56 +109,53 @@ router.post("/addmymsg", (req, res) => {
     }
   });
 });
-// 获取个人发布课程
-router.post("/mykc", (req, res) => {
-  //获取用户名称
-  var $username = req.body.username;
-  var sql = "select * from kclist where kcauthor=?";
-  pool.query(sql, [$username], (err, result) => {
+
+/** ---------------------
+ *
+ * user_note
+ *
+ * ----------------------*/
+
+// 获取笔记类型
+router.get("/getNoteType", (req, res) => {
+  var sql = "select * from noteType";
+  pool.query(sql, (err, result) => {
     if (err) throw err;
-    if (result.length > 0) {
-      res.send({ code: 200, data: result[0] });
-    } else {
-      res.send({ code: 400, msg: "获取失败！" });
-    }
+    res.send({ code: 200, data: result });
   });
 });
-
-// 获取个人笔记
-router.post("/mybj", (req, res) => {
-  //获取用户名称
-  var $username = req.body.username;
-  var sql = "select * from userbj where username=?";
-  pool.query(sql, [$username], (err, result) => {
-    if (err) throw err;
-    console.log(req.body);
-    if (result.length > 0) {
-      res.send({ code: 200, data: result[0] });
-    } else {
-      res.send({ code: 400, msg: "获取失败！" });
-    }
-  });
-});
-
 // 增加个人笔记
-router.post("/addmybj", (req, res) => {
+router.post("/addnote", (req, res) => {
   //获取用户名称
-  var $username = req.body.username;
-  var $bjtit = req.body.bjtit;
-  var $bjmsg = req.body.bjmsg;
-  var $bjtime = req.body.bjtime;
-  var sql = "INSERT INTO userbj(username,bjtit,bjmsg,bjtime) VALUES (?,?,?,?) ";
-  pool.query(sql, [$username, $bjtit, $bjmsg, $bjtime], (err, result) => {
-    if (err) throw err;
-    if (result.affectedRows > 0) {
-      var sql = "select * from userbj where username=?";
-      pool.query(sql, [$username], (err, result) => {
-        if (err) throw err;
+  var $userId = req.body.userId;
+  var $userPhoto = req.body.userPhoto;
+  var $userNickName = req.body.userName;
+  var $noteType = req.body.noteType;
+  var $title = req.body.title;
+  var $creatTime = req.body.creatTime;
+  var $describes = req.body.describes;
+  var $content = req.body.content;
+  var $readNum = req.body.readNum;
+  var $noteState = req.body.noteState;
+  var $noteRemarks = req.body.noteRemarks;
+  var sql =
+    "INSERT INTO noteList(userId,userPhoto,userNickName,noteType,title,creatTime,describes,content,readNum,noteState,noteRemarks) VALUES (?,?,?,?,?,?,?,?,0,0,?) ";
+  pool.query(
+    sql,
+    [$userId, $userPhoto, $userNickName, $noteType, $title, $creatTime, $describes, $content, $noteRemarks],
+    (err, result) => {
+      if (err) throw err;
+      if (result.affectedRows > 0) {
         res.send({ code: 200, data: result[0] });
-      });
+      } else {
+        res.send({ code: 400, msg: "上传失败" });
+      }
     }
-  });
+  );
 });
+
+// _________________________________________________________________________________________________________________________________________________
+
 // 获取关注数据
 router.post("/myguanzhu", (req, res) => {
   //获取用户名称
