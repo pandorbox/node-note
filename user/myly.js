@@ -67,6 +67,7 @@ router.post("/login", (req, res) => {
     } else {
       res.send({ code: 400, msg: "用户名或密码错误" });
     }
+    return;
   });
 });
 
@@ -107,6 +108,7 @@ router.post("/addmymsg", (req, res) => {
     } else {
       res.send({ code: 400, msg: "修改失败！" });
     }
+    return;
   });
 });
 
@@ -129,15 +131,29 @@ router.post("/addnote", (req, res) => {
   //获取用户名称
   var $userId = req.body.userId;
   var $userPhoto = req.body.userPhoto;
-  var $userNickName = req.body.userName;
+  var $userNickName = req.body.userNickName;
   var $noteType = req.body.noteType;
   var $title = req.body.title;
   var $creatTime = req.body.creatTime;
   var $describes = req.body.describes;
   var $content = req.body.content;
-  var $readNum = req.body.readNum;
-  var $noteState = req.body.noteState;
   var $noteRemarks = req.body.noteRemarks;
+  if (!$userNickName) {
+    res.send({ code: 400, msg: "无用户信息！" });
+    return;
+  } else if (!$noteType) {
+    res.send({ code: 400, msg: "请选择笔记类型！" });
+    return;
+  } else if (!$title) {
+    res.send({ code: 400, msg: "请输入标题！" });
+    return;
+  } else if (!$describes) {
+    res.send({ code: 400, msg: "请输入说明" });
+    return;
+  } else if (!$content) {
+    res.send({ code: 400, msg: "请输入代码" });
+    return;
+  }
   var sql =
     "INSERT INTO noteList(userId,userPhoto,userNickName,noteType,title,creatTime,describes,content,readNum,noteState,noteRemarks) VALUES (?,?,?,?,?,?,?,?,0,0,?) ";
   pool.query(
@@ -146,7 +162,7 @@ router.post("/addnote", (req, res) => {
     (err, result) => {
       if (err) throw err;
       if (result.affectedRows > 0) {
-        res.send({ code: 200, data: result[0] });
+        res.send({ code: 200, data: result });
       } else {
         res.send({ code: 400, msg: "上传失败" });
       }
