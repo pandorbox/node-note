@@ -19,7 +19,7 @@ app.use(
 );
 app.use(express.static(__dirname + "/public"));
 
-const user = require("./user/myly.js");
+const user = require("./user/note.js");
 app.use("/user", user);
 
 // 后台管理系统

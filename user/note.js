@@ -2,6 +2,8 @@ const pool = require("../pool.js");
 const express = require("express");
 var router = express.Router();
 
+// 引入jwt token工具
+const JwtUtil = require("../public/utils/jwt");
 //fs fileSystem 文件系统模块
 //操作文件:创建/删除/移动文件
 const fs = require("fs");
@@ -63,7 +65,13 @@ router.post("/login", (req, res) => {
   pool.query(sql, [$uname, $upwd], (err, result) => {
     if (err) throw err;
     if (result.length > 0) {
-      res.send({ code: 200, data: result[0] });
+      // 登陆成功，添加token验证
+      let _id = result._id + "";
+      // 将用户id传入并生成token
+      let jwt = new JwtUtil(_id);
+      let token = jwt.generateToken();
+      // 将 token 返回给客户端
+      res.send({ code: 200, data: result[0], token: token });
     } else {
       res.send({ code: 400, msg: "用户名或密码错误" });
     }
@@ -168,6 +176,12 @@ router.post("/addnote", (req, res) => {
       }
     }
   );
+});
+
+// 获取个人笔记列表
+router.get("/getMyNoteList", (req, res) => {
+  var $userName = req.body.userName;
+  var sql = "select * from ";
 });
 
 // _________________________________________________________________________________________________________________________________________________
