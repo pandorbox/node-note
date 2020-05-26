@@ -66,12 +66,13 @@ router.post("/login", (req, res) => {
     if (err) throw err;
     if (result.length > 0) {
       // 登陆成功，添加token验证
-      let _id = result._id + "";
+      let _id = result[0].userId + "";
       // 将用户id传入并生成token
-      let jwt = new JwtUtil(_id);
+      let jwt = new JwtUtil({ user_id: _id });
       let token = jwt.generateToken();
+      result[0]["token"] = token;
       // 将 token 返回给客户端
-      res.send({ code: 200, data: result[0], token: token });
+      res.send({ code: 200, data: result[0] });
     } else {
       res.send({ code: 400, msg: "用户名或密码错误" });
     }
@@ -180,8 +181,19 @@ router.post("/addnote", (req, res) => {
 
 // 获取个人笔记列表
 router.get("/getMyNoteList", (req, res) => {
-  var $userName = req.body.userName;
-  var sql = "select * from ";
+  let token = req.headers.authorization;
+  let jwt = new JwtUtil(token);
+  var $userId = jwt.verifyToken().user_id;
+  var sql = "select * from noteList";
+  pool.query(sql, [$userId], (err, result) => {
+    if (err) throw err;
+    console.log(result);
+    if (result.length > 0) {
+      res.send({ code: 200, data: result });
+    } else {
+      res.send({ code: 400, msg: "获取列表失败！" });
+    }
+  });
 });
 
 // _________________________________________________________________________________________________________________________________________________
