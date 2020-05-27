@@ -38,7 +38,7 @@ router.post("/registe", (req, res) => {
       pool.query(sql, [$uname, $upwd, $uname], (err, result) => {
         if (err) throw err;
         if (result.affectedRows > 0) {
-          res.send("1");
+          res.send({ code: 200, msg: "注册成功！" });
         } else {
           res.send({ code: 400, msg: "注册失败！" });
         }
@@ -186,8 +186,7 @@ router.get("/getMyNoteList", (req, res) => {
   let token = req.headers.authorization;
   let jwt = new JwtUtil(token);
   var $userId = jwt.verifyToken().user_id;
-  console.log($userId);
-  var sql = "select * from noteList";
+  var sql = "select * from noteList where userId=?";
   pool.query(sql, [$userId], (err, result) => {
     if (err) throw err;
     if (result.length > 0) {
