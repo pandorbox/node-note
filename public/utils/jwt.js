@@ -35,6 +35,8 @@ class Jwt {
         current = Math.floor(Date.now() / 1000);
       if (current <= exp) {
         res = result.data || {};
+      } else {
+        res = "err";
       }
     } catch (e) {
       res = "err";

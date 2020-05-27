@@ -81,11 +81,13 @@ router.post("/login", (req, res) => {
 });
 
 //获取个人信息
-router.post("/getUserInfo", (req, res) => {
+router.get("/getUserInfo", (req, res) => {
   //获取用户名称
-  var $username = req.body.username;
+  let token = req.headers.authorization;
+  let jwt = new JwtUtil(token);
+  var $userId = jwt.verifyToken().user_id;
   var sql = "select * from user where " + "userId=?";
-  pool.query(sql, [$username], (err, result) => {
+  pool.query(sql, [$userId], (err, result) => {
     if (err) throw err;
     if (result.length > 0) {
       res.send({ code: 200, data: result[0] });
@@ -184,10 +186,10 @@ router.get("/getMyNoteList", (req, res) => {
   let token = req.headers.authorization;
   let jwt = new JwtUtil(token);
   var $userId = jwt.verifyToken().user_id;
+  console.log($userId);
   var sql = "select * from noteList";
   pool.query(sql, [$userId], (err, result) => {
     if (err) throw err;
-    console.log(result);
     if (result.length > 0) {
       res.send({ code: 200, data: result });
     } else {

@@ -22,15 +22,14 @@ app.use(express.static(__dirname + "/public"));
 //验证token
 app.use(function(req, res, next) {
   // 我这里知识把登陆和注册请求去掉了，其他的多有请求都需要进行token校验
-  if (req.url != "/user/login" && req.url != "/user/registe") {
+  if (req.url == "/user/getMyNoteList" || req.url == "/user/addnote" || req.url == "/user/getUserInfo") {
     let token = req.headers.authorization;
     let jwt = new JwtUtil(token);
     let result = jwt.verifyToken();
     // 如果考验通过就next，否则就返回登陆信息不正确
     if (result == "err") {
-      res.send({ code: 400, msg: "登录已过期,请重新登录" });
+      res.send({ code: 401, msg: "身份验证失败,请重新登录" });
     } else {
-      console.log("res:", result);
       next();
     }
   } else {
@@ -40,8 +39,6 @@ app.use(function(req, res, next) {
 
 const user = require("./user/note.js");
 app.use("/user", user);
-
-// token验证
 
 // 后台管理系统
 
