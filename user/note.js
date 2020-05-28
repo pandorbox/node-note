@@ -192,7 +192,7 @@ router.get("/getMyNoteList", (req, res) => {
     if (result.length > 0) {
       res.send({ code: 200, data: result });
     } else {
-      res.send({ code: 400, msg: "获取列表失败！" });
+      res.send({ code: 400, msg: "还没有数据！" });
     }
   });
 });
