@@ -21,7 +21,7 @@ app.use(
 app.use(express.static(__dirname + "/public"));
 //验证token
 app.use(function(req, res, next) {
-  // 我这里知识把登陆和注册请求去掉了，其他的多有请求都需要进行token校验
+  // 需要进行token校验的路由
   if (req.url == "/user/getMyNoteList" || req.url == "/user/addnote" || req.url == "/user/getUserInfo") {
     let token = req.headers.authorization;
     let jwt = new JwtUtil(token);
